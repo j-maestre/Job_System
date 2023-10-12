@@ -43,12 +43,12 @@ JobSystem::~JobSystem(){
 
   m_stop = true;
   // Esperamos a que terminen todos los hilos antes de destruir
-  for(auto &t : m_thread_vector){
+  /*for(auto &t : m_thread_vector){
     
     if(t.joinable()){
       t.join();
     }
-  }
+  }*/
 
 }
 

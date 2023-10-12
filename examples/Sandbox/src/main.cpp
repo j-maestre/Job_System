@@ -34,8 +34,8 @@ int main(){
 
   JobSystem job;
 
-  Easy();
-  job.add_task(Easy);
+  //Easy();
+  //job.add_task(Easy);
   //job.add_task(Medium);
 
   return 0;
