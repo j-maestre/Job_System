@@ -48,8 +48,8 @@ project "JobSystem"
 
   filter "configurations:Debug"
     defines { "DEBUG" }
-    runtime "Release"
-    optimize "on"
+    runtime "Debug"
+    optimize "Debug"
     symbols "on"
 
   filter "configurations:Release"
