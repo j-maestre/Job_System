@@ -1,9 +1,20 @@
 #include "JobSystem.h"
 
 
+
+
+void JobSystem::worker_thread(){
+  //std::lock_guard<std::mutex> lg(m_cv);
+  // Waiting
+  //m_cv.wait(lg, [](){
+    //return m_ready;
+  //});
+}
+
 JobSystem::JobSystem(){
   
   m_stop = false;
+  m_ready = false;
   auto threads_count = std::thread::hardware_concurrency();
   printf("threads-> %d\n", threads_count);
 
@@ -34,10 +45,10 @@ JobSystem::JobSystem(){
 
 }
 
-void JobSystem::add_task(std::function<void()> callback){
-  std::lock_guard<std::mutex> locked {m_mutex_task};
-  m_task_queue.push(std::move(callback));
-}
+//void JobSystem::add_task(std::function<void()> callback){
+  //std::lock_guard<std::mutex> locked {m_mutex_task};
+  //m_task_queue.push(std::move(callback));
+//}
 
 void JobSystem::wait_until_finish(){
   while(!m_task_queue.empty());

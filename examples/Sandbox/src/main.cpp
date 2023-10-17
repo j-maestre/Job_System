@@ -24,6 +24,9 @@ void Easy(){
   printf("Task Easy done in %fms\n", duracion_ms);
 }
 
+int Num(){
+  return 555;
+}
 
 void Medium(){
 
@@ -49,9 +52,6 @@ void Medium(){
   double duracion_ms = duracion.count() * 1000.0;
 
   printf("Task Medium done in %fms\n", duracion_ms);
-
-
-  
   
 }
 
@@ -64,13 +64,16 @@ int main(int argc, char *argv[]){
   std::function<void()> func2{Medium};
   
 
-  for (int i = 0; i < 30; i++){
+  std::future<int> future = job.add_task(Num);
+  int return_num = future.get();
+
+
+
+  printf("Num-> %d\n", return_num);
+
+  for (int i = 0; i < 5; i++){
     job.add_task(func2);
     job.add_task(func1);
-    //job.add_task(func2);
-    //job.add_task(func1);
-    //job.add_task(func2);
-    //job.add_task(func2);
   }
 
   job.wait_until_finish();
