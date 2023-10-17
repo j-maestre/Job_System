@@ -28,11 +28,33 @@ public:
     std::lock_guard<std::mutex> locked {m_mutex_task};
     
     using return_type = decltype(callback());
-
+ 
     std::packaged_task<return_type()> task(callback);
     std::shared_ptr<std::packaged_task<return_type()>> s_pointer = std::make_shared<std::packaged_task<return_type()>>(std::move(task));
     auto lambda = [s_pointer](){
+
       return (*s_pointer)();
+    };
+
+
+    std::future<return_type> future = s_pointer->get_future();
+    m_task_queue.push(std::move(lambda));
+    
+    return future;
+  }
+  
+  template<typename T, typename A>
+  auto add_task(T callback, A parameter) -> std::future<decltype(callback(parameter))>{
+    std::lock_guard<std::mutex> locked {m_mutex_task};
+    
+    using return_type = decltype(callback(parameter));
+    using parameter_type = decltype(parameter);
+
+    std::packaged_task<return_type(parameter_type)> task(std::bind(callback, parameter));
+
+    std::shared_ptr<std::packaged_task<return_type(parameter_type)>> s_pointer = std::make_shared<std::packaged_task<return_type(parameter_type)>>(std::move(task));
+    auto lambda = [s_pointer,parameter](){
+      return (*s_pointer)(parameter);
     };
 
 

@@ -25,7 +25,12 @@ void Easy(){
 }
 
 int Num(){
-  return 555;
+  return rand()%10000;
+}
+
+int NumRange(int range){
+  printf("Num que recibe-> %d\n", range);
+  return rand()%range;
 }
 
 void Medium(){
@@ -57,6 +62,7 @@ void Medium(){
 
 
 int main(int argc, char *argv[]){
+  srand(time(NULL));
   JobSystem job;
 
   //Easy();
@@ -64,16 +70,18 @@ int main(int argc, char *argv[]){
   std::function<void()> func2{Medium};
   
 
-  std::future<int> future = job.add_task(Num);
-  int return_num = future.get();
 
-
-
-  printf("Num-> %d\n", return_num);
-
-  for (int i = 0; i < 5; i++){
+  for (int i = 0; i < 50; i++){
     job.add_task(func2);
     job.add_task(func1);
+  
+    //std::future<int> future = job.add_task(Num);
+    //int return_num = future.get();
+    //printf("Num-> %d\n", return_num);
+    
+    std::future<int> futureRange = job.add_task(NumRange, 5);
+    int return_num_range = futureRange.get();
+    printf("Num con range-> %d\n", return_num_range);
   }
 
   job.wait_until_finish();
