@@ -26,7 +26,11 @@ JobSystem::JobSystem(){
         std::function<void()> task;
 
         {
-          std::lock_guard<std::mutex> locked {m_mutex_task};
+          std::unique_lock<std::mutex> locked {m_mutex_task};
+          // Esperamos a que haya una tarea
+          m_condition_var.wait(locked, [this](){
+            return !m_task_queue.empty() || m_stop;
+          });
           if(!m_task_queue.empty()){
             task = m_task_queue.front();
             m_task_queue.pop();
@@ -57,7 +61,7 @@ void JobSystem::wait_until_finish(){
 JobSystem::~JobSystem(){
 
   m_stop = true;
-
+  m_condition_var.notify_all();
   int count = 1;
   // Esperamos a que terminen todos los hilos antes de destruir
   for(auto &t : m_thread_vector){

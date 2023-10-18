@@ -10,6 +10,8 @@
 
 #include <functional>
 
+#include <cstdarg>
+
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -32,13 +34,13 @@ public:
     std::packaged_task<return_type()> task(callback);
     std::shared_ptr<std::packaged_task<return_type()>> s_pointer = std::make_shared<std::packaged_task<return_type()>>(std::move(task));
     auto lambda = [s_pointer](){
-
       return (*s_pointer)();
     };
 
 
     std::future<return_type> future = s_pointer->get_future();
     m_task_queue.push(std::move(lambda));
+    m_condition_var.notify_one();
     
     return future;
   }
@@ -60,6 +62,7 @@ public:
 
     std::future<return_type> future = s_pointer->get_future();
     m_task_queue.push(std::move(lambda));
+    m_condition_var.notify_one();
     
     return future;
   }
@@ -74,7 +77,7 @@ private:
   std::vector<std::thread> m_thread_vector;
   std::queue<std::function<void()>> m_task_queue;
   std::mutex m_mutex_task;
-  std::condition_variable m_cv;
+  std::condition_variable m_condition_var;
   bool m_ready;
   
   

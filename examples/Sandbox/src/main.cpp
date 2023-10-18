@@ -71,13 +71,13 @@ int main(int argc, char *argv[]){
   
 
 
-  for (int i = 0; i < 50; i++){
-    job.add_task(func2);
-    job.add_task(func1);
+  for (int i = 0; i < 5; i++){
+    job.add_task(Easy);
+    job.add_task(Medium);
   
-    //std::future<int> future = job.add_task(Num);
-    //int return_num = future.get();
-    //printf("Num-> %d\n", return_num);
+    std::future<int> future = job.add_task(Num);
+    int return_num = future.get();
+    printf("Num-> %d\n", return_num);
     
     std::future<int> futureRange = job.add_task(NumRange, 5);
     int return_num_range = futureRange.get();
